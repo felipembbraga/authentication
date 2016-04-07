@@ -2,10 +2,12 @@ import React, {Component, Navigator, StyleSheet, Text, View} from 'react-native'
 
 import SignIn from './components/authentication/signin';
 import SignUp from './components/authentication/signup';
+import Tweets from './components/tweets/tweets';
 
 const ROUTES = {
   signin: SignIn,
-  signup: SignUp
+  signup: SignUp,
+  tweets: Tweets
 };
 
 class Main extends Component {

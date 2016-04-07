@@ -1,4 +1,4 @@
-import React, {Component, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {AsyncStorage, Component, StyleSheet, Text, TextInput, View} from 'react-native';
 import Firebase from 'firebase';
 import Button from '../common/button';
 
@@ -8,7 +8,7 @@ class SignIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: 'Default',
+            username: '',
             password: '',
             errorMessage: ''
         };
@@ -25,9 +25,10 @@ class SignIn extends Component {
                 <Text>
                     Sign In
                 </Text>
-                <Text style={styles.label}>Username:
+                <Text style={styles.label}>Email:
                 </Text>
-                <TextInput style={styles.input} value={this.state.username} onChangeText={(text) => this.setState({username: text})}/>
+                <TextInput style={styles.input} value={this.state.username} onChangeText={(text) => this.setState({username: text})}
+                  keyboardType="email-address"/>
                 <Text style={styles.label}>Password</Text>
                 <TextInput secureTextEntry={true} style={styles.input} value={this.state.password} onChangeText={(text) => this.setState({password: text})}/>
                 <Text>{this.state.errorMessage}</Text>
@@ -47,7 +48,10 @@ class SignIn extends Component {
 
                 this.setState({errorMessage: error.message});
             } else {
-                console.log("Authenticated successfully with payload:", authData);
+              AsyncStorage.setItem('user', JSON.stringify(authData))
+              .then(() => {
+                this.props.navigator.immediatelyResetRouteStack([{name: 'tweets'}]);
+              });
             }
         });
     }
