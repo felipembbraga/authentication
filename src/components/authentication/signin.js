@@ -9,13 +9,14 @@ class SignIn extends Component {
         super(props);
         this.state = {
             username: 'Default',
-            password: ''
+            password: '',
+            errorMessage: ''
         };
         this.firebaseRef = this.getRef();
     }
 
     getRef() {
-      return new Firebase(FirebaseUrl);
+        return new Firebase(FirebaseUrl);
     }
 
     render() {
@@ -29,23 +30,32 @@ class SignIn extends Component {
                 <TextInput style={styles.input} value={this.state.username} onChangeText={(text) => this.setState({username: text})}/>
                 <Text style={styles.label}>Password</Text>
                 <TextInput secureTextEntry={true} style={styles.input} value={this.state.password} onChangeText={(text) => this.setState({password: text})}/>
+                <Text>{this.state.errorMessage}</Text>
                 <Button text={'Sign In'} onPress={this.onPress.bind(this)}/>
+                <Button text={'I need an account...'} onPress={this.onSignupPress.bind(this)}/>
             </View>
         )
     }
 
     onPress() {
         // Log the user in
-        // this.firebaseRef.authWithPassword({
-        //     email: this.state.username,
-        //     password: this.state.password
-        // }, function(error, authData) {
-        //     if (error) {
-        //         console.log("Login Failed!", error);
-        //     } else {
-        //         console.log("Authenticated successfully with payload:", authData);
-        //     }
-        // });
+        this.firebaseRef.authWithPassword({
+            email: this.state.username,
+            password: this.state.password
+        }, (error, authData) => {
+            if (error) {
+
+                this.setState({errorMessage: error.message});
+            } else {
+                console.log("Authenticated successfully with payload:", authData);
+            }
+        });
+    }
+
+    onSignupPress() {
+        // navigate over to signup
+        // ideal => navigator.push('signup');
+        this.props.navigator.push({name: 'signup'});
     }
 }
 
@@ -62,11 +72,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         margin: 5,
-        width: 200,
         alignSelf: 'center'
     },
     label: {
-        fontSize: 18
+        fontSize: 18,
+        alignSelf: 'flex-start',
+        marginLeft: 5
     }
 });
 
